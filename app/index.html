@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="teamViewerApp">
 <head>
   <meta charset="utf-8">
   <title>Team Profile Viewer</title>
@@ -40,13 +40,14 @@
                 <button class="btn btn-default" ng-click="getMembers(organization)" type="submit"><i class="fa fa-search fa-lg"></i></button>
               </div>
             </div>
-          </form>  
+          </form>
         </div>
     </div>
   </header>
-  
+
 
   <div class="container app-container">
+    <flash:messages></flash:messages>
     <div class="content" ng-show="loading">
       <h1 class="intro-text" >Github Team Viewer</h1>
       <div class="col-md-6 col-xs-12 intro-text-container">
@@ -80,7 +81,7 @@
                 <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{ user.location }}.
               </li>
               <li ng-show="user.blog">
-                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{user.blog}}" target="_blank">{{user.blog}}</a></span>. 
+                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{user.blog}}" target="_blank">{{user.blog}}</a></span>.
               </li>
               <li ng-show="user.followers">
                 <i class="fa fa-users fa-lg fa-li"></i> {{user.followers}} followers on GitHub.
@@ -102,7 +103,7 @@
       </div>
     </div>
   </div>
-  <div class="repo-container container">     
+  <div class="repo-container container">
     <div class="row">
       <h1 class="app-text" ng-show="repos">Projects</h1>
       <div ng-repeat="repo in repos">
@@ -113,7 +114,9 @@
       </div>
     </div>
   </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script type="text/javascript" src="lib/angular/angular.js"></script>
+  <script type="text/javascript" src="lib/angular-flash.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/services.js"></script>
   <script type="text/javascript" src="js/controllers.js"></script>
