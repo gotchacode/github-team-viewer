@@ -1,5 +1,5 @@
 /* Controllers */
-function AppCtrl($scope, $http, $log) {
+function AppCtrl($scope, $http, $log, flash) {
   $scope.loading = true;
   $scope.finding = false;
   $scope.organization = 'github';
@@ -16,6 +16,7 @@ function AppCtrl($scope, $http, $log) {
   $scope.getMembers = function (organization) {
     reset();
     $scope.company = false;
+    flash('Getting team for you Mate!');
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!");
     $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
