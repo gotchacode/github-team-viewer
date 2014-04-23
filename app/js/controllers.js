@@ -16,20 +16,28 @@ function AppCtrl($scope, $http, $log, flash) {
   $scope.getMembers = function (organization) {
     reset();
     $scope.company = false;
-    flash('Getting team for you Mate!');
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!");
-    $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
-        .success(function (data) {
-            $scope.members = data.data;
-            $scope.loading = false;
-            $scope.finding = true;
-            $scope.company = true;
-        })
-        .error(function (data, status) {
-            console.log(data);
-            console.log(status);
-        });
+      $http.get("https://api.github.com/orgs/" + organization).success(function (data) {
+        angular.element('#flash-messages').css('display', 'none');
+          if (data.type === 'Organization') {
+             $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
+               .success(function (data) {
+                 $scope.members = data.data;
+                 $scope.loading = false;
+                 $scope.finding = true;
+                 $scope.company = true;
+             })
+             .error(function (data, status) {
+               console.log(data);
+               console.log(status);
+             });
+          } else {
+            flash('Please enter correct Organization name');
+          }
+      }).error(function (e) {
+        flash('error', 'Please enter correct Organization name');
+      });
   };
 
   $scope.getUser = function (user) {
