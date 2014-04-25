@@ -1,15 +1,21 @@
 angular.module('teamViewerApp')
 
-.factory('$gitHubInteractor', ["$http", "GITHUB_ORGANIZATION_URI",
+.factory('$gitHubInteractor', ["$http", "GITHUB_URI",
 
-	function($http, GITHUB_ORGANIZATION_URI){
+	function($http, GITHUB_URI){
 		return {
 			isOrganization: function(organization){
-				return $http.get(GITHUB_ORGANIZATION_URI + organization)	
+				return $http.get(GITHUB_URI.organizations + organization)	
 			},
 			getOrganization: function(organization){
-				return $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
-			}
+				return $http.jsonp(GITHUB_URI.organizations + organization + "/members?callback=JSON_CALLBACK")
+			},
+			getUser: function(user){
+				return $http.jsonp(GITHUB_URI.users + user + "?callback=JSON_CALLBACK")
+			},
+			getUserRepos: function(user){
+				return $http.jsonp(GITHUB_URI.users + user + "/repos?callback=JSON_CALLBACK")
+			}			
 		}
 	}
 ])
@@ -78,5 +84,59 @@ angular.module('teamViewerApp')
 		}
 
 		return Organization
+	}
+])
+
+
+.factory('userModel', ['$gitHubInteractor', function($gitHubInteractor){
+		function User(){
+			this.list = []
+			this.repos = []
+
+			var _class = this;
+
+			_class.addToUserList = function(user, data){
+				_class.list[user] = data
+			}
+
+			_class.addToRepoList = function(user, data){
+				_class.repos[user] = data
+			}
+
+			_class.findUser = function(user, userFoundHandler){
+				if( !_.isEmpty(_class.list[user]) ){
+					userFoundHandler(_class.list[user])
+					return;
+				}
+
+				var onGetUserSuccess = function(data){
+					_class.addToUserList(user, data)
+					userFoundHandler(data)
+				}
+
+				$gitHubInteractor
+						.getUser(user)
+						.success(onGetUserSuccess)
+			}
+
+			_class.findProjects = function(user, userFoundHandler, errorHandler){
+				if( !_.isEmpty(_class.repos[user]) ){
+					userFoundHandler(_class.repos[user])
+					return;
+				}
+
+				var onGetUserReposSuccess = function(data){
+					_class.addToRepoList(user, data)
+					userFoundHandler(data)
+				}
+
+				$gitHubInteractor
+						.getUserRepos(user)
+						.success(onGetUserReposSuccess)
+						.error(errorHandler)
+			}
+		}
+
+		return User;
 	}
 ])

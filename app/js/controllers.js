@@ -1,5 +1,5 @@
 /* Controllers */
-function AppCtrl($scope, $http, $log, flash, organizationModel) {
+function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
   $scope.loading = true;
   $scope.finding = false;
   $scope.organization = 'github';
@@ -13,6 +13,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel) {
   };
 
   $scope.Organization = new organizationModel()
+  $scope.User = new userModel()
 
   reset();
 
@@ -36,6 +37,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel) {
       $scope.loading = false;
       $scope.finding = true;
       $scope.company = true;
+      flash('success', 'Organization information loaded') 
     }
 
     var fatalConnection = function(data, status){
@@ -57,10 +59,13 @@ function AppCtrl($scope, $http, $log, flash, organizationModel) {
     $scope.current_repo = null;
 
     $log.log("Getting " + user + "'s data.");
-    $http.jsonp("https://api.github.com/users/" + user + "?callback=JSON_CALLBACK").success(function (data) {
+
+    var onUserFound = function(data){
       $scope.user = data.data;
       $scope.loading = false;
-    });
+    }
+
+    $scope.User.findUser(user, onUserFound)
   };
 
   // get user's repo
@@ -72,13 +77,18 @@ function AppCtrl($scope, $http, $log, flash, organizationModel) {
     $scope.current_repo = null;
 
     $log.log("Fetching projects of " + user);
-    $http.jsonp("https://api.github.com/users/" + user + "/repos?callback=JSON_CALLBACK")
-      .success(function (data) {
-        angular.element('#flash-messages').css('display', 'none');
-        $scope.repos = data.data;
-      }).error(function () {
-        flash('error', 'User does not have any projects!');
-      });
+
+    var onProjectsFound = function(data){
+      angular.element('#flash-messages').css('display', 'none');
+      console.log($scope)
+      $scope.repos = data.data;
+    }
+
+    var onFatal = function(data){
+      flash('error', 'User does not have any projects!')
+    }
+
+    $scope.User.findProjects(user, onProjectsFound, onFatal)
   };
 }
 //MyCtrl1.$inject = [];
