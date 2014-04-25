@@ -1,26 +1,41 @@
 /* Controllers */
 function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
-  $scope.loading = true;
-  $scope.finding = false;
-  $scope.organization = 'github';
-  var reset = function () {
-    $scope.members = [];
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+
+  var resetExcept = function (exceptions) {
+    _.each(["user","members","repos","commits"], function(attr){
+      if( !_.contains(exceptions, attr) )
+        $scope[attr] = []
+    })
     $scope.current_member = null;
     $scope.current_repo = null;
-  };
+  }
+  ,getMembers
+  ,getUser
+  ,getRepos;
 
-  $scope.Organization = new organizationModel()
-  $scope.User = new userModel()
+  // Define Properties on the scope
+  function defineScope(){
+    $scope.loading = true;
+    $scope.finding = false;
+    $scope.organization = 'github';
 
-  reset();
+    $scope.Organization = new organizationModel()
+    $scope.User = new userModel()
+
+    // Functions
+    $scope.getMembers = getMembers
+    $scope.getUser = getUser
+    $scope.getRepos = getRepos
+
+    resetExcept(null)
+  }
 
   // get members of the organization
-  $scope.getMembers = function (organization) {
-    reset();
-    $scope.company = false;
+  getMembers = function (organization) {
+
+    resetExcept(null)
+
+    $scope.company = false
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!")
 
@@ -35,26 +50,24 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
     var organizationDetailFound = function(data){
       $scope.members = data.data;
       $scope.loading = false;
-      $scope.finding = true;
       $scope.company = true;
+      $scope.finding = true;
       flash('success', 'Organization information loaded') 
     }
 
     var fatalConnection = function(data, status){
-      console.log(data);
-      console.log(status);
+      $log.log("Oops Something went wrong!")
+      $log.log(data)
+      $log.log(status)
     }
 
     $scope.Organization.findOrganization(organization, organizationFound, organizationDetailFound, organizationInvalid, fatalConnection)
   };
 
   // get user's detail
-  $scope.getUser = function (user) { 
-    $scope.user = [];
-    $scope.repo = [];
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+  getUser = function (user) { 
+    resetExcept(["members"])
+
     $scope.current_member = null;
     $scope.current_repo = null;
 
@@ -69,10 +82,9 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
   };
 
   // get user's repo
-  $scope.getRepos = function (user) {
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+  getRepos = function (user) {
+    resetExcept(["user", "members"])
+
     $scope.current_member = null;
     $scope.current_repo = null;
 
@@ -90,5 +102,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
 
     $scope.User.findProjects(user, onProjectsFound, onFatal)
   };
+
+  defineScope()
 }
 //MyCtrl1.$inject = [];
