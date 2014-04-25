@@ -1,5 +1,5 @@
 /* Controllers */
-function AppCtrl($scope, $http, $log, flash) {
+function AppCtrl($scope, $http, $log, flash, organizationModel) {
   $scope.loading = true;
   $scope.finding = false;
   $scope.organization = 'github';
@@ -11,6 +11,9 @@ function AppCtrl($scope, $http, $log, flash) {
     $scope.current_member = null;
     $scope.current_repo = null;
   };
+
+  $scope.Organization = new organizationModel()
+
   reset();
 
   // get members of the organization
@@ -18,25 +21,29 @@ function AppCtrl($scope, $http, $log, flash) {
     reset();
     $scope.company = false;
     // check if the entered value is org or not!
-    $log.log("Getting " + organization + ", for you, hold tight!");
-      $http.get("https://api.github.com/orgs/" + organization).success(function (data) {
-        angular.element('#flash-messages').css('display', 'none');
-          if (data.type === 'Organization') {
-            $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
-              .success(function (data) {
-                $scope.members = data.data;
-                $scope.loading = false;
-                $scope.finding = true;
-                $scope.company = true;
-              })
-              .error(function (data, status) {
-                console.log(data);
-                console.log(status);
-              });
-          }
-      }).error(function (e) {
-        flash('error', 'Please enter correct Organization name');
-      });
+    $log.log("Getting " + organization + ", for you, hold tight!")
+
+    var organizationInvalid = function(organization){
+      flash('error', 'Please enter correct Organization name')
+    }
+
+    var organizationFound = function(organization){
+      flash('success', 'Organization found, Looking for additional information') 
+    }
+
+    var organizationDetailFound = function(data){
+      $scope.members = data.data;
+      $scope.loading = false;
+      $scope.finding = true;
+      $scope.company = true;
+    }
+
+    var fatalConnection = function(data, status){
+      console.log(data);
+      console.log(status);
+    }
+
+    $scope.Organization.findOrganization(organization, organizationFound, organizationDetailFound, organizationInvalid, fatalConnection)
   };
 
   // get user's detail
