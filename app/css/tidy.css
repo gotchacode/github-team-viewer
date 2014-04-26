@@ -899,3 +899,21 @@ a {
   margin: 0;
   padding: 15px;
 }
+
+#flash-messages{
+  display: block;
+  width: 500px;
+  background: black;
+  padding: 5px;
+  text-align: center;
+  border: 2px solid;
+  z-index: 100;
+  position: absolute;
+  top: 75px;
+  left: 50%;
+  margin-left: -250px;
+  -webkit-animation: opacity 1.2s ease-out;
+  -moz-animation: opacity 800ms ease-out;
+  -o-animation: opacity 800ms ease-out;
+  animation: opacity 1.2s ease-out;
+}
