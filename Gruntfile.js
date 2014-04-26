@@ -62,7 +62,6 @@ module.exports = function (grunt) {
 
   // Build test for Travis
   grunt.registerTask('verify', [
-    'jsbeautifier:verify',
     'jshint'
   ]);
 
