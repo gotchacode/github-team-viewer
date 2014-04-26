@@ -1,77 +1,109 @@
 /* Controllers */
-function AppCtrl($scope, $http, $log, flash) {
-  $scope.loading = true;
-  $scope.finding = false;
-  $scope.organization = 'github';
-  var reset = function () {
-    $scope.members = [];
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+/**/
+function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
+
+  var resetExcept = function (exceptions) {
+    _.each(["user","members","repos","commits"], function(attr){
+      if( !_.contains(exceptions, attr)) {
+        $scope[attr] = [];
+      }
+    });
     $scope.current_member = null;
     $scope.current_repo = null;
+  },
+  getMembers,
+  getUser,
+  getRepos;
+
+  // Define Properties on the scope
+  var defineScope = function() {
+    $scope.loading = true;
+    $scope.finding = false;
+    $scope.organization = 'github';
+
+    $scope.Organization = new OrganizationModel();
+    $scope.User = new UserModel();
+
+    // Functions
+    $scope.getMembers = getMembers;
+    $scope.getUser = getUser;
+    $scope.getRepos = getRepos;
+
+    resetExcept(null);
   };
-  reset();
 
   // get members of the organization
-  $scope.getMembers = function (organization) {
-    reset();
+  getMembers = function (organization) {
+
+    resetExcept(null);
+
     $scope.company = false;
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!");
-      $http.get("https://api.github.com/orgs/" + organization).success(function (data) {
-        angular.element('#flash-messages').css('display', 'none');
-          if (data.type === 'Organization') {
-            $http.jsonp("https://api.github.com/orgs/" + organization + "/members?callback=JSON_CALLBACK")
-              .success(function (data) {
-                $scope.members = data.data;
-                $scope.loading = false;
-                $scope.finding = true;
-                $scope.company = true;
-              })
-              .error(function (data, status) {
-                console.log(data);
-                console.log(status);
-              });
-          }
-      }).error(function (e) {
-        flash('error', 'Please enter correct Organization name');
-      });
+
+    var organizationInvalid = function(organization){
+      flash('error', 'Please enter correct Organization name');
+    };
+
+    var organizationFound = function(organization){
+      flash('success', 'Organization found, Looking for additional information', 200);
+    };
+
+    var organizationDetailFound = function(data){
+      $scope.members = data.data;
+      $scope.loading = false;
+      $scope.company = true;
+      $scope.finding = true;
+      flash('success', 'Organization information loaded', 200);
+    };
+
+    var fatalConnection = function(data, status){
+      $log.log("Oops Something went wrong!");
+      $log.log(data);
+      $log.log(status);
+    };
+
+    $scope.Organization.findOrganization(organization, organizationFound, organizationDetailFound, organizationInvalid, fatalConnection);
   };
 
   // get user's detail
-  $scope.getUser = function (user) { 
-    $scope.user = [];
-    $scope.repo = [];
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+  getUser = function (user) {
+    resetExcept(["members"]);
+
     $scope.current_member = null;
     $scope.current_repo = null;
 
     $log.log("Getting " + user + "'s data.");
-    $http.jsonp("https://api.github.com/users/" + user + "?callback=JSON_CALLBACK").success(function (data) {
+
+    var onUserFound = function(data){
       $scope.user = data.data;
       $scope.loading = false;
-    });
+    };
+
+    $scope.User.findUser(user, onUserFound);
   };
 
   // get user's repo
-  $scope.getRepos = function (user) {
-    $scope.repos = [];
-    $scope.repos = [];
-    $scope.commits = [];
+  getRepos = function (user) {
+    resetExcept(["user", "members"]);
+
     $scope.current_member = null;
     $scope.current_repo = null;
 
     $log.log("Fetching projects of " + user);
-    $http.jsonp("https://api.github.com/users/" + user + "/repos?callback=JSON_CALLBACK")
-      .success(function (data) {
-        angular.element('#flash-messages').css('display', 'none');
-        $scope.repos = data.data;
-      }).error(function () {
-        flash('error', 'User does not have any projects!');
-      });
+
+    var onProjectsFound = function(data){
+      angular.element('#flash-messages').css('display', 'none');
+      $scope.repos = data.data;
+    };
+
+    var onFatal = function(data){
+      flash('error', 'User does not have any projects!', 200);
+    };
+
+    $scope.User.findProjects(user, onProjectsFound, onFatal);
   };
+
+  defineScope();
 }
 //MyCtrl1.$inject = [];
