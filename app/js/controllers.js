@@ -54,7 +54,7 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
       $scope.loading = false;
       $scope.company = true;
       $scope.finding = true;
-      flash('success', 'Organization information loaded', 200); 
+      flash('success', 'Organization information loaded', 200);
     };
 
     var fatalConnection = function(data, status){

@@ -72,7 +72,7 @@ angular.module('teamViewerApp')
               .success(onGetOrganizationSuccess)
               .error(onFatal);
             orgFoundHandler(organization);
-          }; 
+          };
 
           $gitHubInteractor
             .isOrganization(organization)
