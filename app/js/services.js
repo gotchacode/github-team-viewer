@@ -5,7 +5,7 @@ angular.module('teamViewerApp')
   function($http, GITHUB_URI){
     return {
       isOrganization: function(organization){
-        return $http.get(GITHUB_URI.organizations + organization); 
+        return $http.get(GITHUB_URI.organizations + organization);
       },
       getOrganization: function(organization){
         return $http.jsonp(GITHUB_URI.organizations + organization + "/members?callback=JSON_CALLBACK");
@@ -15,7 +15,7 @@ angular.module('teamViewerApp')
       },
       getUserRepos: function(user){
         return $http.jsonp(GITHUB_URI.users + user + "/repos?callback=JSON_CALLBACK");
-      }     
+      }
     };
   }
 ])
@@ -33,7 +33,7 @@ angular.module('teamViewerApp')
 
       _class.addToInvalidList = function(organizationName) {
         _class.invalidList[organizationName] = true;
-      };   
+      };
 
       _class.findOrganization = function(organization, orgFoundHandler, orgDataFoundHandler, invalidOrgHandler, errorHandler) {
 
@@ -72,8 +72,7 @@ angular.module('teamViewerApp')
               .success(onGetOrganizationSuccess)
               .error(onFatal);
             orgFoundHandler(organization);
-          };       
-
+          }; 
 
           $gitHubInteractor
             .isOrganization(organization)

@@ -10,7 +10,7 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
     });
     $scope.current_member = null;
     $scope.current_repo = null;
-  }, 
+  },
   getMembers,
   getUser,
   getRepos;
@@ -46,7 +46,7 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
     };
 
     var organizationFound = function(organization){
-      flash('success', 'Organization found, Looking for additional information', 200); 
+      flash('success', 'Organization found, Looking for additional information', 200);
     };
 
     var organizationDetailFound = function(data){
@@ -67,7 +67,7 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
   };
 
   // get user's detail
-  getUser = function (user) { 
+  getUser = function (user) {
     resetExcept(["members"]);
 
     $scope.current_member = null;
