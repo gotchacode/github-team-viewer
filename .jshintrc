@@ -3,6 +3,10 @@
     "module": true,
     "define": true,
     "requirejs": true,
+    "browser": true,
+    "_" : true,
+    "devel": true,
+    "angular": true,
     "require": true
   },
   "browser": true,
