@@ -44,7 +44,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
     }
 
     var organizationFound = function(organization){
-      flash('success', 'Organization found, Looking for additional information') 
+      flash('success', 'Organization found, Looking for additional information', 200) 
     }
 
     var organizationDetailFound = function(data){
@@ -52,7 +52,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
       $scope.loading = false;
       $scope.company = true;
       $scope.finding = true;
-      flash('success', 'Organization information loaded') 
+      flash('success', 'Organization information loaded', 200) 
     }
 
     var fatalConnection = function(data, status){
@@ -97,7 +97,7 @@ function AppCtrl($scope, $http, $log, flash, organizationModel, userModel) {
     }
 
     var onFatal = function(data){
-      flash('error', 'User does not have any projects!')
+      flash('error', 'User does not have any projects!', 200)
     }
 
     $scope.User.findProjects(user, onProjectsFound, onFatal)
