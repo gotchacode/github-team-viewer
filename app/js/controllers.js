@@ -93,7 +93,6 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
     $log.log("Fetching projects of " + user);
 
     var onProjectsFound = function(data){
-      angular.element('#flash-messages').css('display', 'none');
       $scope.repos = data.data;
     };
 

@@ -1,11 +1,11 @@
 angular.module('flash', [])
 .factory('flash', ['$rootScope', '$timeout', function($rootScope, $timeout) {
   var messages = [];
-
+  var messageTimeout = 3000;
   var reset;
   var cleanup = function() {
     $timeout.cancel(reset);
-    reset = $timeout(function() { messages = []; });
+    reset = $timeout(function() { messages = []; $rootScope.$emit('flash:hide') }, messageTimeout);
   };
 
   var emit = function() {
@@ -42,16 +42,24 @@ angular.module('flash', [])
 
 .directive('flashMessages', [function() {
   var directive = { restrict: 'EA', replace: true };
+
   directive.template =
-    '<div id="flash-messages">' +
+    '<div id="flash-messages" data-ng-show="shown">' +
       '<span ng-repeat="m in messages" class="{{m.level}}">{{m.text}}</li>' +
     '</div>';
 
   directive.controller = ['$scope', '$rootScope', function($scope, $rootScope) {
-    $rootScope.$on('flash:message', function(_, messages, done) {
+
+    $rootScope.$on('flash:message', function(_, messages, done){
+      $scope.shown = true;
       $scope.messages = messages;
       done();
     });
+
+    $rootScope.$on('flash:hide', function(){
+      $scope.shown = false;
+    });
+
   }];
 
   return directive;
