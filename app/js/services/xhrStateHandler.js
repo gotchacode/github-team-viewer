@@ -1,6 +1,6 @@
 angular.module('teamViewerApp')
 
-.factory("xhrStateHandler", [ "$window", "ngProgress", function($window, ngProgress){
+.factory("XhrStateHandler", [ "$window", "ngProgress", function($window, ngProgress){
   function Handler(){
     
     var instance = { }

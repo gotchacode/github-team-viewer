@@ -1,6 +1,6 @@
 /* Controllers */
 /**/
-function AppCtrl($scope, $http, $log, flash, CollectionHandler, xhrStateHandler) {
+function AppCtrl($scope, $http, $log, flash, CollectionHandler, XhrStateHandler) {
 
   var resetExcept = function (exceptions) {
     _.each(["User","Organization","Project"], function(attr){
@@ -21,7 +21,7 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler, xhrStateHandler)
 
   // Define Properties on the scope
   var defineScope = function() {
-    $scope.xhrState = new xhrStateHandler();
+    $scope.xhrState = new XhrStateHandler();
     $scope.xhrState.setAllMessages(["Intializing","Fetching Data","Loading Data","Fetched","Retry","Fatal"]);
     $scope.xhrState.idle();
 
