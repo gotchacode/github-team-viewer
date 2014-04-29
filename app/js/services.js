@@ -25,25 +25,25 @@ angular.module('teamViewerApp')
       this.list = [];
       this.invalidList = [];
 
-      var _class = this;
+      var self = this;
 
-      _class.addToList = function(organizationName, result) {
-        _class.list[organizationName] = result;
+      self.addToList = function(organizationName, result) {
+        self.list[organizationName] = result;
       };
 
-      _class.addToInvalidList = function(organizationName) {
-        _class.invalidList[organizationName] = true;
+      self.addToInvalidList = function(organizationName) {
+        self.invalidList[organizationName] = true;
       };
 
-      _class.findOrganization = function(organization, orgFoundHandler, orgDataFoundHandler, invalidOrgHandler, errorHandler) {
+      self.findOrganization = function(organization, orgFoundHandler, orgDataFoundHandler, invalidOrgHandler, errorHandler) {
 
-        if( _class.invalidList[organization] ) {
+        if( self.invalidList[organization] ) {
           invalidOrgHandler(organization);
           return;
         }
 
-        if( !_.isEmpty( _class.list[organization]) ) {
-          orgDataFoundHandler(_class.list[organization]);
+        if( !_.isEmpty( self.list[organization]) ) {
+          orgDataFoundHandler(self.list[organization]);
           return;
         }
         else {
@@ -53,14 +53,14 @@ angular.module('teamViewerApp')
           };
 
           var onGetOrganizationSuccess = function(data, status){
-            _class.addToList(organization, data);
+            self.addToList(organization, data);
             orgDataFoundHandler(data, status);
           };
 
           var onFatal = function(data, status) {
             if (isInvalidOrganization(data)) {
               invalidOrgHandler(organization);
-              _class.addToInvalidList(organization);
+              self.addToInvalidList(organization);
               return;
             }
             errorHandler(data, status);
@@ -92,24 +92,24 @@ angular.module('teamViewerApp')
       this.list = [];
       this.repos = [];
 
-      var _class = this;
+      var self = this;
 
-      _class.addToUserList = function(user, data){
-        _class.list[user] = data;
+      self.addToUserList = function(user, data){
+        self.list[user] = data;
       };
 
-      _class.addToRepoList = function(user, data){
-        _class.repos[user] = data;
+      self.addToRepoList = function(user, data){
+        self.repos[user] = data;
       };
 
-      _class.findUser = function(user, userFoundHandler){
-        if( !_.isEmpty(_class.list[user]) ) {
-          userFoundHandler(_class.list[user]);
+      self.findUser = function(user, userFoundHandler){
+        if( !_.isEmpty(self.list[user]) ) {
+          userFoundHandler(self.list[user]);
           return;
         }
 
         var onGetUserSuccess = function(data){
-          _class.addToUserList(user, data);
+          self.addToUserList(user, data);
           userFoundHandler(data);
         };
 
@@ -118,14 +118,14 @@ angular.module('teamViewerApp')
           .success(onGetUserSuccess);
       };
 
-      _class.findProjects = function(user, userFoundHandler, errorHandler){
-        if( !_.isEmpty(_class.repos[user]) ){
-          userFoundHandler(_class.repos[user]);
+      self.findProjects = function(user, userFoundHandler, errorHandler){
+        if( !_.isEmpty(self.repos[user]) ){
+          userFoundHandler(self.repos[user]);
           return;
         }
 
         var onGetUserReposSuccess = function(data){
-          _class.addToRepoList(user, data);
+          self.addToRepoList(user, data);
           userFoundHandler(data);
         };
 
