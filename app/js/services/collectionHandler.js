@@ -32,6 +32,7 @@ angular.module('teamViewerApp')
         }
 
         else if( !_.isEmpty( self.list[name]) ) {
+          self.current = self.list[name];
           objDataFoundHandler(self.list[name]);
           return;
         }
