@@ -73,9 +73,9 @@
           <img class="img-avatar" alt="profile image" ng-src="{{user.avatar_url}}"/>
 
           <button class="btn btn-success" ng-click="getRepos(user.login)">Check repos</button>
-            <ul class="fa-ul">
+            <ul class="fa-ul" ng-show="user.company">
               <li>
-                <i class="fa fa-user fa-lg fa-li"></i> {{ user.login }} works at {{organization}}.
+                <i class="fa fa-user fa-lg fa-li"></i> {{ user.login }} works at {{ user.company }}.
               </li>
               <li ng-show="user.location">
                 <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{ user.location }}.
