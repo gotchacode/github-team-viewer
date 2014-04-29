@@ -86,10 +86,6 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler, xhrStateHandler)
       flash('success', 'Project information loaded', 200);
     };
 
-    var onFatal = function(data){
-      flash('error', 'User does not have any projects!', 200);
-    };
-
     $scope.Project.findObject(user, onProjectsFound, null, fatalConnection);
   };
 
