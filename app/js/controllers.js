@@ -78,7 +78,7 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler, XhrStateHandler)
   // get user's repo
   getRepos = function (user) {
     $scope.xhrState.initiate();
-    resetExcept(["User", "Organization"]);    
+    resetExcept(["User", "Organization"]);
 
     $log.log("Fetching projects of " + user);
 
