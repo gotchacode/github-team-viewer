@@ -48,6 +48,7 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler, xhrStateHandler)
     $log.log("Getting " + organization + ", for you, hold tight!");
 
     var organizationInvalid = function(organization){
+      $scope.xhrState.error();
       flash('error', 'Please enter correct Organization name');
     };
 
