@@ -2,19 +2,8 @@
 /**/
 function AppCtrl($scope, $http, $log, flash, CollectionHandler, XhrStateHandler) {
 
-  var resetExcept = function (exceptions) {
-    _.each(["User","Organization","Project"], function(attr){
-      if( !_.contains(exceptions, attr)) {
-        $scope[attr].resetCurrent();
-      }
-    });
-  },
-  fatalConnection = function(data, status){
-    $scope.xhrState.fatal();
-    $log.log("Oops Something went wrong!");
-    $log.log(data);
-    $log.log(status);
-  },
+  var resetExcept,
+  fatalConnection,
   getMembers,
   getUser,
   getRepos;
@@ -88,6 +77,21 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler, XhrStateHandler)
     };
 
     $scope.Project.findObject(user, onProjectsFound, null, fatalConnection);
+  };
+
+  resetExcept = function (exceptions) {
+    _.each(["User","Organization","Project"], function(attr){
+      if( !_.contains(exceptions, attr)) {
+        $scope[attr].resetCurrent();
+      }
+    });
+  };
+
+  fatalConnection = function(data, status){
+    $scope.xhrState.fatal();
+    $log.log("Oops Something went wrong!");
+    $log.log(data);
+    $log.log(status);
   };
 
   defineScope();
