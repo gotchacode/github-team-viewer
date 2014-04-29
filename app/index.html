@@ -59,6 +59,7 @@
       </div>
     </div>
     <div class="row" ng-show="finding">
+      <h1 class="app-text">{{organization}}'s Team</h1>
       <div class="col-md-8 col-xs-6 team-container">
         <span class="user-list">
           <span ng-repeat="member in members" class="img-avatar-container">
@@ -72,9 +73,9 @@
         <span ng-show="user">
           <img class="img-avatar" alt="profile image" ng-src="{{user.avatar_url}}"/>
 
-          <button class="btn btn-success" ng-click="getRepos(user.login)">Check repos</button>
-            <ul class="fa-ul">
-              <li ng-show="user.company">
+          <button class="btn btn-success" ng-click="getRepos(user.login)">Check Projects</button>
+            <ul class="fa-ul" ng-show="user.company">
+              <li>
                 <i class="fa fa-user fa-lg fa-li"></i> {{ user.login }} works at {{ user.company }}.
               </li>
               <li ng-show="user.location">
@@ -103,13 +104,12 @@
       </div>
     </div>
   </div>
-  <div class="repo-container container">
+  <div class="container">
     <div class="row">
       <h1 class="app-text" ng-show="repos">Projects</h1>
       <div ng-repeat="repo in repos">
-        <div class="col-md-6">
-          <i class="fa fa-laptop fa-3x" ng-show="repo"></i> <a class="projects" href="{{repo.html_url}}" target="_blank">{{repo.name}}</a>
-
+        <div class="col-md-4">
+          <a class="projects" href="{{repo.html_url}}" target="_blank">{{repo.name}}</a>
         </div>
       </div>
     </div>
