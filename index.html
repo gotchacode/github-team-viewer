@@ -70,7 +70,7 @@
       <div class="col-md-4 col-xs-6 team-member-info" ng-show="company">
         <h4 ng-show="user.name">{{ user.name }}</h4>
         <span ng-show="user">
-          <img class="img-avatar" alt="profile image" ng-src="{{user.avatar_url}}"/>
+          <img class="img-avatar" alt="profile image" ng-src="{{ user.avatar_url }}"/>
 
           <button class="btn btn-success" ng-click="getRepos(user.login)">Check repos</button>
             <ul class="fa-ul">
@@ -81,19 +81,19 @@
                 <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{ user.location }}.
               </li>
               <li ng-show="user.blog">
-                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{user.blog}}" target="_blank">{{user.blog}}</a></span>.
+                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{ user.blog }}" target="_blank">{{ user.blog }}</a></span>.
               </li>
               <li ng-show="user.followers">
-                <i class="fa fa-users fa-lg fa-li"></i> {{user.followers}} followers on GitHub.
+                <i class="fa fa-users fa-lg fa-li"></i> {{ user.followers }} followers on GitHub.
               </li>
               <li ng-show="user.public_repos">
-                <i class="fa fa-code-fork fa-lg fa-li"></i>Has open sourced {{user.public_repos}} public repos .
+                <i class="fa fa-code-fork fa-lg fa-li"></i>Has open sourced {{ user.public_repos }} public repos .
               </li>
               <li ng-show="user.html_url">
-                <i class="fa fa-github fa-lg fa-li"></i>Github profile URL: <a href="{{user.html_url}}" target="_blank">{{user.html_url}}</a>
+                <i class="fa fa-github fa-lg fa-li"></i>Github profile URL: <a href="{{ user.html_url }}" target="_blank">{{ user.html_url }}</a>
               </li>
               <li ng-show="user.email">
-                <i class="fa fa-rocket fa-lg fa-li"></i> Email address: <a href="mailto:{{user.email}}">{{user.email}}</a>
+                <i class="fa fa-rocket fa-lg fa-li"></i> Email address: <a href="mailto:{{ user.email }}">{{ user.email }}</a>
               </li>
               <li ng-show="user.hireable">
                 <i class="fa fa-question fa-lg fa-li"></i> Available for Hire : {{ user.hireable }}
