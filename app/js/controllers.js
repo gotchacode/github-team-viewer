@@ -1,6 +1,6 @@
 /* Controllers */
 /**/
-function AppCtrl($scope, $http, $log, flash, Collection) {
+function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
 
   var resetExcept = function (exceptions) {
     _.each(["User","Organization","Project"], function(attr){
@@ -24,9 +24,9 @@ function AppCtrl($scope, $http, $log, flash, Collection) {
     $scope.finding = false;
     $scope.organization = 'github';
 
-    $scope.Organization = new Collection('getOrganization');
-    $scope.User = new Collection('getUser');
-    $scope.Project = new Collection('getUserRepos');
+    $scope.Organization = new CollectionHandler('getOrganization');
+    $scope.User = new CollectionHandler('getUser');
+    $scope.Project = new CollectionHandler('getUserRepos');
 
     // Functions
     $scope.getMembers = getMembers;
