@@ -1,6 +1,6 @@
 /* Controllers */
 /**/
-function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
+function AppCtrl($scope, $http, $log, flash, CollectionHandler, xhrStateHandler) {
 
   var resetExcept = function (exceptions) {
     _.each(["User","Organization","Project"], function(attr){
@@ -10,6 +10,7 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
     });
   },
   fatalConnection = function(data, status){
+    $scope.xhrState.fatal();
     $log.log("Oops Something went wrong!");
     $log.log(data);
     $log.log(status);
@@ -20,8 +21,10 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
 
   // Define Properties on the scope
   var defineScope = function() {
-    $scope.loading = true;
-    $scope.finding = false;
+    $scope.xhrState = new xhrStateHandler();
+    $scope.xhrState.setAllMessages(["Intializing","Fetching Data","Loading Data","Fetched","Retry","Fatal"]);
+    $scope.xhrState.idle();
+
     $scope.organization = 'github';
 
     $scope.Organization = new CollectionHandler('getOrganization');
@@ -38,10 +41,9 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
 
   // get members of the organization
   getMembers = function (organization) {
-
+    $scope.xhrState.initiate();
     resetExcept(null);
 
-    $scope.company = false;
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!");
 
@@ -50,9 +52,7 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
     };
 
     var organizationDetailFound = function(data){
-      $scope.loading = false;
-      $scope.company = true;
-      $scope.finding = true;
+      $scope.xhrState.success();
       flash('success', 'Organization information loaded', 200);
     };
 
@@ -61,12 +61,14 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
 
   // get user's detail
   getUser = function (user) {
+    $scope.xhrState.initiate();
     resetExcept(["Organization"]);
 
     $log.log("Getting " + user + "'s data.");
 
     var onUserFound = function(data){
-      $scope.loading = false;
+      $scope.xhrState.success();
+      flash('success', 'User information loaded', 200);
     };
 
     $scope.User.findObject(user, onUserFound, null, fatalConnection);
@@ -74,11 +76,14 @@ function AppCtrl($scope, $http, $log, flash, CollectionHandler) {
 
   // get user's repo
   getRepos = function (user) {
+    $scope.xhrState.initiate();
     resetExcept(["User", "Organization"]);    
 
     $log.log("Fetching projects of " + user);
 
     var onProjectsFound = function(data){
+      $scope.xhrState.success();
+      flash('success', 'Project information loaded', 200);
     };
 
     var onFatal = function(data){

@@ -48,7 +48,7 @@
 
   <div class="container app-container">
     <flash:messages></flash:messages>
-    <div class="content" ng-show="loading">
+    <div class="content" ng-show="xhrState.isIdle">
       <h1 class="intro-text" >Github Team Viewer</h1>
       <div class="col-md-6 col-xs-12 intro-text-container">
 
@@ -58,7 +58,7 @@
       <div class="col-md-6 col-xs-12 profile-image-container">
       </div>
     </div>
-    <div class="row" ng-show="finding">
+    <div class="row" ng-show="!xhrState.isIdle">
       <h1 class="app-text">Team</h1>
       <div class="col-md-8 col-xs-6 team-container">
         <span class="user-list">
@@ -68,9 +68,9 @@
           </span>
         </span>
       </div>
-      <div class="col-md-4 col-xs-6 team-member-info" ng-show="company">
+      <div class="col-md-4 col-xs-6 team-member-info" ng-show="User.currentObjectPresent()">
         <h4 ng-show="User.current.name">{{ User.current.name }}</h4>
-        <span ng-show="User.currentObjectPresent()">
+        <span>
           <img class="img-avatar" alt="profile image" ng-src="{{User.current.avatar_url}}"/>
 
           <button class="btn btn-success" ng-click="getRepos(User.current.login)">Check Projects</button>
@@ -121,6 +121,7 @@
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/services/githubInteractor.js"></script>
   <script type="text/javascript" src="js/services/collectionHandler.js"></script>
+  <script type="text/javascript" src="js/services/xhrStateHandler.js"></script>
   <script type="text/javascript" src="js/controllers.js"></script>
   <script type="text/javascript" src="js/filters.js"></script>
   <script type="text/javascript" src="js/directives.js"></script>
