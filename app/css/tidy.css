@@ -842,7 +842,6 @@ body {
 
 .team-member-info {
   min-height: 150px;
-  position: fixed;
   right: 0;
 }
 
@@ -874,6 +873,7 @@ body {
 
 .app-text {
   font-weight: lighter;
+  margin-left: 20px;
 }
 
 a {
@@ -916,4 +916,9 @@ a {
   -moz-animation: opacity 800ms ease-out;
   -o-animation: opacity 800ms ease-out;
   animation: opacity 1.2s ease-out;
+}
+
+.repo-container {
+  max-width: 800px;
+  margin-left: 75px;
 }
