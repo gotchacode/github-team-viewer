@@ -4,9 +4,6 @@ angular.module('teamViewerApp')
 
   function($http, GITHUB_URI){
     return {
-      isOrganization: function(organization){
-        return $http.get(GITHUB_URI.organizations + organization);
-      },
       getOrganization: function(organization){
         return $http.jsonp(GITHUB_URI.organizations + organization + "/members?callback=JSON_CALLBACK");
       },
@@ -20,122 +17,68 @@ angular.module('teamViewerApp')
   }
 ])
 
-.factory('OrganizationModel', ['$gitHubInteractor', function($gitHubInteractor){
-    function Organization(){
-      this.list = [];
-      this.invalidList = [];
-
+.factory('Collection', ['$gitHubInteractor', function($gitHubInteractor){
+    function Collection(endPoint){
       var self = this;
 
-      self.addToList = function(organizationName, result) {
-        self.list[organizationName] = result;
+      self.list = [];
+      self.current = [];
+      self.invalidList = [];
+
+      self.addToList = function(key, value){
+        self.current = self.list[key] = value.data;
       };
 
-      self.addToInvalidList = function(organizationName) {
-        self.invalidList[organizationName] = true;
+      self.addToInvalidList = function(key) {
+        self.current = {};
+        self.invalidList[key] = true;
       };
 
-      self.findOrganization = function(organization, orgFoundHandler, orgDataFoundHandler, invalidOrgHandler, errorHandler) {
+      self.currentObjectPresent = function(){
+        return !_.isEmpty(self.current)
+      }
 
-        if( self.invalidList[organization] ) {
-          invalidOrgHandler(organization);
+      self.resetCurrent = function(){
+        self.current = {}
+      }
+
+      self.findObject = function(name, objDataFoundHandler, invalidObjHandler, errorHandler){
+        if( self.invalidList[name] ) {
+          invalidObjHandler(name);
           return;
         }
 
-        if( !_.isEmpty( self.list[organization]) ) {
-          orgDataFoundHandler(self.list[organization]);
+        else if( !_.isEmpty( self.list[name]) ) {
+          objDataFoundHandler(self.list[name]);
           return;
         }
+
         else {
-
-          var isInvalidOrganization = function(data){
+          var isInvalidObject = function(data){
             return data.message === 'Not Found';
           };
 
-          var onGetOrganizationSuccess = function(data, status){
-            self.addToList(organization, data);
-            orgDataFoundHandler(data, status);
+          var onGetObjectSuccess = function(data, status){
+            self.addToList(name, data);
+            objDataFoundHandler(data, status);
           };
 
           var onFatal = function(data, status) {
-            if (isInvalidOrganization(data)) {
-              invalidOrgHandler(organization);
-              self.addToInvalidList(organization);
+            if (isInvalidObject(data)) {
+              invalidObjHandler(name);
+              self.addToInvalidList(name);
               return;
             }
             errorHandler(data, status);
           };
 
-          var onIsOrganizationSuccess = function(data, status) {
-            $gitHubInteractor
-              .getOrganization(organization)
-              .success(onGetOrganizationSuccess)
-              .error(onFatal);
-            orgFoundHandler(organization);
-          };
-
-          $gitHubInteractor
-            .isOrganization(organization)
-            .success(onIsOrganizationSuccess)
+          $gitHubInteractor[endPoint](name)
+            .success(onGetObjectSuccess)
             .error(onFatal);
         }
-      };
+      }
     }
 
-    return Organization;
-  }
-])
-
-
-.factory('UserModel', ['$gitHubInteractor', function($gitHubInteractor){
-    function User(){
-      this.list = [];
-      this.repos = [];
-
-      var self = this;
-
-      self.addToUserList = function(user, data){
-        self.list[user] = data;
-      };
-
-      self.addToRepoList = function(user, data){
-        self.repos[user] = data;
-      };
-
-      self.findUser = function(user, userFoundHandler){
-        if( !_.isEmpty(self.list[user]) ) {
-          userFoundHandler(self.list[user]);
-          return;
-        }
-
-        var onGetUserSuccess = function(data){
-          self.addToUserList(user, data);
-          userFoundHandler(data);
-        };
-
-        $gitHubInteractor
-          .getUser(user)
-          .success(onGetUserSuccess);
-      };
-
-      self.findProjects = function(user, userFoundHandler, errorHandler){
-        if( !_.isEmpty(self.repos[user]) ){
-          userFoundHandler(self.repos[user]);
-          return;
-        }
-
-        var onGetUserReposSuccess = function(data){
-          self.addToRepoList(user, data);
-          userFoundHandler(data);
-        };
-
-        $gitHubInteractor
-          .getUserRepos(user)
-          .success(onGetUserReposSuccess)
-          .error(errorHandler);
-      };
-    }
-
-    return User;
+    return Collection;
   }
 ]);
