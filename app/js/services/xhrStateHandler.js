@@ -1,6 +1,6 @@
 angular.module('teamViewerApp')
 
-.factory("xhrStateHandler", [ "$window", function($window){
+.factory("xhrStateHandler", [ "$window", "ngProgress", function($window, ngProgress){
   function Handler(){
     
     var instance = { }
@@ -47,30 +47,37 @@ angular.module('teamViewerApp')
      };
      instance.idle = function(){
        currentState = states[ 0 ];
+       ngProgress.reset();
        setAPIProperties();
      };
      instance.initiate = function(){
        currentState = states[ 1 ];
+       ngProgress.reset();
+       ngProgress.start();
        setAPIProperties();
      };
 
      instance.complete = function(){
        currentState = states[ 2 ];
+       ngProgress.complete();
        setAPIProperties();
      };
 
      instance.success = function(){
        currentState = states[ 3 ];
+       ngProgress.complete();
        setAPIProperties();
      };
 
      instance.error = function(){
        currentState = states[ 4 ];
+       ngProgress.stop();
        setAPIProperties();
      };
 
      instance.fatal = function(showAlert){
        currentState = states[ 5 ];
+       ngProgress.stop();
        setAPIProperties();
        if(showAlert)
          $window
