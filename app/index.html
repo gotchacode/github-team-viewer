@@ -75,12 +75,12 @@
           <img class="img-avatar" alt="profile image" ng-src="{{User.current.avatar_url}}"/>
 
           <button class="btn btn-success" ng-click="getRepos(User.current.login)">Check Projects</button>
-            <ul class="fa-ul" ng-show="User.current.company">
-              <li>
-                <i class="fa fa-user fa-lg fa-li"></i> {{ User.current.login }} works at {{ User.current.company }}.
+            <ul class="fa-ul">
+              <li ng-show="User.current.company">
+                <i class="fa fa-user fa-lg fa-li"></i> {{User.current.login}} works at {{User.current.company}}.
               </li>
               <li ng-show="User.current.location">
-                <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{ User.current.location }}.
+                <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{User.current.location}}.
               </li>
               <li ng-show="User.current.blog">
                 <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{User.current.blog}}" target="_blank">{{User.current.blog}}</a></span>.
@@ -121,7 +121,7 @@
   <script type="text/javascript" src="lib/angular-flash.js"></script>
   <script type="text/javascript" src="lib/underscore-min.js"></script>
 
-  <script src="lib/ngProgress.js"></script>
+  <script type="text/javascript" src="lib/ngProgress.min.js"></script>
 
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/services/githubInteractor.js"></script>
