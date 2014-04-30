@@ -1,5 +1,7 @@
 #Github Team Viewer 
 
+[![Build Status](https://travis-ci.org/vinitkumar/github-team-viewer.svg?branch=v1.1.2)](https://travis-ci.org/vinitkumar/github-team-viewer)
+
 Github Team Viewer is a handy application built with Angular.js which helps
 you find developers from any organization on github. 
 In order to use it just enter company name in the search bar and you will get a list of developers. 
