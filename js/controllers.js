@@ -1,28 +1,24 @@
 /* Controllers */
 /**/
-function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
+function AppCtrl($scope, $http, $log, flash, CollectionHandler, XhrStateHandler) {
 
-  var resetExcept = function (exceptions) {
-    _.each(["user","members","repos","commits"], function(attr){
-      if( !_.contains(exceptions, attr)) {
-        $scope[attr] = [];
-      }
-    });
-    $scope.current_member = null;
-    $scope.current_repo = null;
-  },
+  var resetExcept,
+  fatalConnection,
   getMembers,
   getUser,
   getRepos;
 
   // Define Properties on the scope
   var defineScope = function() {
-    $scope.loading = true;
-    $scope.finding = false;
+    $scope.xhrState = new XhrStateHandler();
+    $scope.xhrState.setAllMessages(["Intializing","Fetching Data","Loading Data","Fetched","Retry","Fatal"]);
+    $scope.xhrState.idle();
+
     $scope.organization = 'github';
 
-    $scope.Organization = new OrganizationModel();
-    $scope.User = new UserModel();
+    $scope.Organization = new CollectionHandler('getOrganization');
+    $scope.User = new CollectionHandler('getUser');
+    $scope.Project = new CollectionHandler('getUserRepos');
 
     // Functions
     $scope.getMembers = getMembers;
@@ -34,73 +30,68 @@ function AppCtrl($scope, $http, $log, flash, OrganizationModel, UserModel) {
 
   // get members of the organization
   getMembers = function (organization) {
-
+    $scope.xhrState.initiate();
     resetExcept(null);
 
-    $scope.company = false;
     // check if the entered value is org or not!
     $log.log("Getting " + organization + ", for you, hold tight!");
 
     var organizationInvalid = function(organization){
+      $scope.xhrState.error();
       flash('error', 'Please enter correct Organization name');
     };
 
-    var organizationFound = function(organization){
-      flash('success', 'Organization found, Looking for additional information', 200);
-    };
-
     var organizationDetailFound = function(data){
-      $scope.members = data.data;
-      $scope.loading = false;
-      $scope.company = true;
-      $scope.finding = true;
+      $scope.xhrState.success();
       flash('success', 'Organization information loaded', 200);
     };
 
-    var fatalConnection = function(data, status){
-      $log.log("Oops Something went wrong!");
-      $log.log(data);
-      $log.log(status);
-    };
-
-    $scope.Organization.findOrganization(organization, organizationFound, organizationDetailFound, organizationInvalid, fatalConnection);
+    $scope.Organization.findObject(organization, organizationDetailFound, organizationInvalid, fatalConnection);
   };
 
   // get user's detail
   getUser = function (user) {
-    resetExcept(["members"]);
-
-    $scope.current_member = null;
-    $scope.current_repo = null;
+    $scope.xhrState.initiate();
+    resetExcept(["Organization"]);
 
     $log.log("Getting " + user + "'s data.");
 
     var onUserFound = function(data){
-      $scope.user = data.data;
-      $scope.loading = false;
+      $scope.xhrState.success();
+      flash('success', 'User information loaded', 200);
     };
 
-    $scope.User.findUser(user, onUserFound);
+    $scope.User.findObject(user, onUserFound, null, fatalConnection);
   };
 
   // get user's repo
   getRepos = function (user) {
-    resetExcept(["user", "members"]);
-
-    $scope.current_member = null;
-    $scope.current_repo = null;
+    $scope.xhrState.initiate();
+    resetExcept(["User", "Organization"]);
 
     $log.log("Fetching projects of " + user);
 
     var onProjectsFound = function(data){
-      $scope.repos = data.data;
+      $scope.xhrState.success();
+      flash('success', 'Project information loaded', 200);
     };
 
-    var onFatal = function(data){
-      flash('error', 'User does not have any projects!', 200);
-    };
+    $scope.Project.findObject(user, onProjectsFound, null, fatalConnection);
+  };
 
-    $scope.User.findProjects(user, onProjectsFound, onFatal);
+  resetExcept = function (exceptions) {
+    _.each(["User","Organization","Project"], function(attr){
+      if( !_.contains(exceptions, attr)) {
+        $scope[attr].resetCurrent();
+      }
+    });
+  };
+
+  fatalConnection = function(data, status){
+    $scope.xhrState.fatal();
+    $log.log("Oops Something went wrong!");
+    $log.log(data);
+    $log.log(status);
   };
 
   defineScope();
