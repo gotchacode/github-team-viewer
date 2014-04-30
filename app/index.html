@@ -76,9 +76,6 @@
 
           <button class="btn btn-success" ng-click="getRepos(User.current.login)">Check Projects</button>
             <ul class="fa-ul">
-              <li ng-show="User.current.company">
-                <i class="fa fa-user fa-lg fa-li"></i> {{User.current.login}} works at {{User.current.company}}.
-              </li>
               <li ng-show="User.current.location">
                 <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{User.current.location}}.
               </li>
