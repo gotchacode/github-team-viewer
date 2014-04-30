@@ -7,6 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
+  <link rel="stylesheet" href="css/ngProgress.css">
   <!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
   <!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
   <!--script src="js/less-1.3.3.min.js"></script-->
@@ -48,7 +49,7 @@
 
   <div class="container app-container">
     <flash:messages></flash:messages>
-    <div class="content" ng-show="loading">
+    <div class="content" ng-show="xhrState.isIdle">
       <h1 class="intro-text" >Github Team Viewer</h1>
       <div class="col-md-6 col-xs-12 intro-text-container">
 
@@ -58,46 +59,46 @@
       <div class="col-md-6 col-xs-12 profile-image-container">
       </div>
     </div>
-    <div class="row" ng-show="finding">
+    <div class="row" ng-show="Organization.currentObjectPresent()">
       <h1 class="app-text">Team</h1>
       <div class="col-md-8 col-xs-6 team-container">
         <span class="user-list">
-          <span ng-repeat="member in members" class="img-avatar-container">
+          <span ng-repeat="member in Organization.current" class="img-avatar-container">
             <a href="" ng-click="getUser(member.login)"><img ng-src="{{member.avatar_url}}" class="img-avatar"></a
 
           </span>
         </span>
       </div>
-      <div class="col-md-4 col-xs-6 team-member-info" ng-show="company">
-        <h4 ng-show="user.name">{{ user.name }}</h4>
-        <span ng-show="user">
-          <img class="img-avatar" alt="profile image" ng-src="{{user.avatar_url}}"/>
+      <div class="col-md-4 col-xs-6 team-member-info" ng-show="User.currentObjectPresent()">
+        <h4 ng-show="User.current.name">{{ User.current.name }}</h4>
+        <span>
+          <img class="img-avatar" alt="profile image" ng-src="{{User.current.avatar_url}}"/>
 
-          <button class="btn btn-success" ng-click="getRepos(user.login)">Check Projects</button>
-            <ul class="fa-ul" ng-show="user.company">
-              <li>
-                <i class="fa fa-user fa-lg fa-li"></i> {{ user.login }} works at {{ user.company }}.
+          <button class="btn btn-success" ng-click="getRepos(User.current.login)">Check Projects</button>
+            <ul class="fa-ul">
+              <li ng-show="User.current.company">
+                <i class="fa fa-user fa-lg fa-li"></i> {{User.current.login}} works at {{User.current.company}}.
               </li>
-              <li ng-show="user.location">
-                <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{ user.location }}.
+              <li ng-show="User.current.location">
+                <i class="fa fa-location-arrow fa-lg fa-li"></i> lives in {{User.current.location}}.
               </li>
-              <li ng-show="user.blog">
-                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{user.blog}}" target="_blank">{{user.blog}}</a></span>.
+              <li ng-show="User.current.blog">
+                <span><i class="fa fa-pencil fa-lg fa-li"></i>  blogs at <a href="{{User.current.blog}}" target="_blank">{{User.current.blog}}</a></span>.
               </li>
-              <li ng-show="user.followers">
-                <i class="fa fa-users fa-lg fa-li"></i> {{user.followers}} followers on GitHub.
+              <li ng-show="User.current.followers">
+                <i class="fa fa-users fa-lg fa-li"></i> {{User.current.followers}} followers on GitHub.
               </li>
-              <li ng-show="user.public_repos">
-                <i class="fa fa-code-fork fa-lg fa-li"></i>Has open sourced {{user.public_repos}} public repos .
+              <li ng-show="User.current.public_repos">
+                <i class="fa fa-code-fork fa-lg fa-li"></i>Has open sourced {{User.current.public_repos}} public repos .
               </li>
-              <li ng-show="user.html_url">
-                <i class="fa fa-github fa-lg fa-li"></i>Github profile URL: <a href="{{user.html_url}}" target="_blank">{{user.html_url}}</a>
+              <li ng-show="User.current.html_url">
+                <i class="fa fa-github fa-lg fa-li"></i>Github profile URL: <a href="{{User.current.html_url}}" target="_blank">{{User.current.html_url}}</a>
               </li>
-              <li ng-show="user.email">
-                <i class="fa fa-rocket fa-lg fa-li"></i> Email address: <a href="mailto:{{user.email}}">{{user.email}}</a>
+              <li ng-show="User.current.email">
+                <i class="fa fa-rocket fa-lg fa-li"></i> Email address: <a href="mailto:{{User.current.email}}">{{User.current.email}}</a>
               </li>
-              <li ng-show="user.hireable">
-                <i class="fa fa-question fa-lg fa-li"></i> Available for Hire : {{ user.hireable }}
+              <li ng-show="User.current.hireable">
+                <i class="fa fa-question fa-lg fa-li"></i> Available for Hire : {{ User.current.hireable }}
               </li>
             </ul>
         </span>
@@ -106,20 +107,26 @@
   </div>
   <div class="container">
     <div class="row">
-      <h1 class="app-text" ng-show="repos">Projects</h1>
-      <div ng-repeat="repo in repos">
+      <h1 class="app-text" ng-show="Project.currentObjectPresent()">Projects</h1>
+      <div ng-repeat="repo in Project.current">
         <div class="col-md-4">
           <a class="projects" href="{{repo.html_url}}" target="_blank">{{repo.name}}</a>
         </div>
       </div>
     </div>
   </div>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script type="text/javascript" src="lib/angular/angular.js"></script>
   <script type="text/javascript" src="lib/angular-flash.js"></script>
   <script type="text/javascript" src="lib/underscore-min.js"></script>
+
+  <script type="text/javascript" src="lib/ngProgress.min.js"></script>
+
   <script type="text/javascript" src="js/app.js"></script>
-  <script type="text/javascript" src="js/services.js"></script>
+  <script type="text/javascript" src="js/services/githubInteractor.js"></script>
+  <script type="text/javascript" src="js/services/collectionHandler.js"></script>
+  <script type="text/javascript" src="js/services/xhrStateHandler.js"></script>
   <script type="text/javascript" src="js/controllers.js"></script>
   <script type="text/javascript" src="js/filters.js"></script>
   <script type="text/javascript" src="js/directives.js"></script>
