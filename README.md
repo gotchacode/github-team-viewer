@@ -10,6 +10,8 @@ Then, click on any of the image to get detailed information such as email,
 website and location. Also, you can check their projects by clicking on check projects
 button.
 
+<img src="https://i.cloudup.com/tNcPJgI_GN.gif" height="600" width="800">
+
 
 ## Installation
 
