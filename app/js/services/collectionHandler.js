@@ -18,12 +18,12 @@ angular.module('teamViewerApp')
       };
 
       self.currentObjectPresent = function(){
-        return !_.isEmpty(self.current)
-      }
+        return !_.isEmpty(self.current);
+      };
 
       self.resetCurrent = function(){
-        self.current = {}
-      }
+        self.current = {};
+      };
 
       self.findObject = function(name, objDataFoundHandler, invalidObjHandler, errorHandler){
         if( self.invalidList[name] ) {
@@ -60,7 +60,7 @@ angular.module('teamViewerApp')
             .success(onGetObjectSuccess)
             .error(onFatal);
         }
-      }
+      };
     }
 
     return Collection;
