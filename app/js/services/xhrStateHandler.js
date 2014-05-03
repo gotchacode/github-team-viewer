@@ -6,12 +6,12 @@ angular.module('teamViewerApp')
 
     function setAPIProperties() {
       instance.message    = currentState.message;
-      instance.isIdle     = ( currentState == states[0] );
-      instance.isWorking  = ( currentState == states[1] );
-      instance.isComplete = ( currentState == states[2] );
-      instance.isSuccess  = ( currentState == states[3] );
-      instance.isError    = ( currentState == states[4] );
-      instance.isFatal    = ( currentState == states[5] );
+      instance.isIdle     = ( currentState === states[0] );
+      instance.isWorking  = ( currentState === states[1] );
+      instance.isComplete = ( currentState === states[2] );
+      instance.isSuccess  = ( currentState === states[3] );
+      instance.isError    = ( currentState === states[4] );
+      instance.isFatal    = ( currentState === states[5] );
     }
 
     var states = [
@@ -28,19 +28,19 @@ angular.module('teamViewerApp')
     instance = {
 
       setAllMessages: function(messages) {
-         for(var i = 0; i < states.length; i++) {
+        for(var i = 0; i < states.length; i++) {
 
-           if(!messages[i]){
-             messages[i] = "";
-           }
-           states[i].message = messages[i];
-         }
+          if(!messages[i]){
+            messages[i] = "";
+          }
+          states[i].message = messages[i];
+        }
       },
 
       setMessageForState: function(n,message) {
-         if(states[n]){
-           states[n]["message"] = message;
-         }
+        if(states[n]){
+          states[n].message = message;
+        }
       },
 
       reset: function(){
@@ -82,9 +82,10 @@ angular.module('teamViewerApp')
         currentState = states[ 5 ];
         ngProgress.stop();
         setAPIProperties();
-        if(showAlert)
-          $window
-             .alert("An unexpected error occurred while processing this request. Please refresh the page and try again.");
+        if(showAlert) {
+          $window.alert("An unexpected error occurred while processing this request. Please refresh the page and try again.");
+        }
+
       }
     };
     return instance;
@@ -94,6 +95,6 @@ angular.module('teamViewerApp')
     var instance = new Handler();
     instance.idle();
     return instance;
-  }
-return Handler;
-}])
+  };
+  return Handler;
+}]);

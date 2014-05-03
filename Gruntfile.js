@@ -28,7 +28,7 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      all: ['app/js/*.js'],
+      all: ['app/js/*.js', 'app/js/services/*.js'],
       options: {
         jshintrc: '.jshintrc'
       }
