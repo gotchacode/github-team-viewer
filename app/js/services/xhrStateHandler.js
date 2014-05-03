@@ -39,7 +39,7 @@ angular.module('teamViewerApp')
 
       setMessageForState: function(n,message) {
         if(states[n]){
-          states[n]["message"] = message;
+          states[n].message = message;
         }
       },
 
@@ -82,9 +82,10 @@ angular.module('teamViewerApp')
         currentState = states[ 5 ];
         ngProgress.stop();
         setAPIProperties();
-        if(showAlert)
-          $window
-             .alert("An unexpected error occurred while processing this request. Please refresh the page and try again.");
+        if(showAlert) {
+          $window.alert("An unexpected error occurred while processing this request. Please refresh the page and try again.");
+        }
+
       }
     };
     return instance;
