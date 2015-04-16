@@ -11,6 +11,8 @@ Then, click on any of the image to get detailed information such as email,
 website and location. Also, you can check their projects by clicking on check projects
 button.
 
+Hope you enjoy it and if you do, you can tip me here at https://gratipay.com/vinitkme/. Thanks! :)
+
 <img src="https://i.cloudup.com/tNcPJgI_GN.gif" height="432" width="800">
 
 
