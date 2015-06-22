@@ -922,3 +922,7 @@ a {
   max-width: 800px;
   margin-left: 75px;
 }
+
+.ng-cloak {
+  display: none !important;
+}
